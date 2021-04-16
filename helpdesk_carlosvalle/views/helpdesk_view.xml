@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <!-- Con el siguiente record conseguimos mostrar desde la ventana de tickets los campos indicados-->
+    <record id="view_helpdesk_ticket_tree" model="ir.ui.view">
+        <field name="name">view.helpdesk_ticket.tree </field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type= "xml">
+            <tree string="Ticket">
+                <field name="name" />  
+                <field name="date" />  
+                <field name="state" />  
+            </tree>
+        </field> 
+    </record>
+
+    <!-- Con este record conseguimos tener una vista formulario agrupada por columnas, ventanas...-->
+    <record id="view_helpdesk_ticket_form" model="ir.ui.view">
+        <field name="name">view.helpdesk_ticket.form </field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type= "xml">
+            <form string="Ticket">
+                <header>
+                    <field name="state" widget="statusbar" />
+                </header>
+
+                <sheet> <!--Con esto veremos la página en forma de hoja-->
+                    <div class="oe_title"><!-- Aqui estamos diciendo que el titulo de nuestra hoja sea en h1 -->
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group> <!-- Con esto indicamos que quiero dos columnas en mi hoja. Las columnas se indican con group -->
+                            <!-- Cada grupo es una columna de titulo y campo -->
+                        <group><!-- Esta será la primera columna-->
+                            <field name="date" />  
+                            <field name="date_limit" />  
+                        </group>
+                        <group><!-- Esta será la segunda columna-->
+                            <field name="assigned" />  
+                            <field name="time" />  
+                        </group>
+                    </group>
+                    <notebook> <!-- Con esto creamos las diferentes pestañas en la hoja-->
+                        <page string="Description">
+                            <field name="description"/>  <!-- Aqui añadimos el campo sin añadirle ningun grupo -->
+                        </page>
+                        <page string="Quality"><!-- Dentro de la pestaña Quality vemos dos formas de poder visualizar el contenido -->
+                            <group name="group"> <!-- Primera forma -->
+                                <field name="action_corrective" />
+                            </group>
+                            <group string="Preventive Action"><!-- Segunda forma-->
+                                <field name="action_preventive" nolabel="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>    
+            </form>
+        </field> 
+    </record>
+
+    <!-- <record id="view_helpdesk_ticket_search" model="ir.ui.view">
+        <field name="name">view.helpdesk_ticket.search </field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type= "xml">
+            <search string="Ticket">
+                <field name="name" />
+                <group string="Group By" name="groupby">
+                    <filter name="name_groupby" string="name" context="{'group_by: 'name'}" />
+                </group>  
+            </search>
+        </field> 
+    </record>
+
+    <record id="helpdesk_ticket_action" model="ir.actions.act_window">
+        <field name="name">Ticket </field>
+        <field name="res_model">helpdesk.ticket</field>
+        <field name="view_mode">tree,form</field>
+        <field name= "help" type= "html">
+            <p class="oe_view_nocontent_create">
+                Click to create a new ticket
+            </p>
+        </field> 
+    </record>
+
+    <menuitem id="helpdesk_ticket_menu" parent="" action="helpdesk_ticket_action" sequence="20"/> -->
+</odoo>
+
