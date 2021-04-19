@@ -43,6 +43,28 @@ class HelpdeskTicket(models.Model):
         string='Preventive Action',
         help='Descrive preventive actions to do')
 
-
-
     
+    def asignar(self):
+        self.write({'state':'asignado'
+        , 'assigned': True })               # write me vale para escribir a la vez varios campos y leer varios registros quitando de ese modo for
+
+        # for ticket in self:                 # self son varios registros, por lo que tenemos que hacerlo uno a uno en un for o con un write
+        #     ticket.state = 'asignado'
+        #     ticket.assigne = True           # mi objeto ticket lo estoy asignando
+
+
+    def proceso(self):
+        self.ensure_one()
+        self.state = 'proceso'
+    
+    def pendiente(self):
+        self.ensure_one()
+        self.state = 'pendiente'
+
+    def finalizar(self):
+        self.ensure_one()
+        self.state = 'resuelto'
+
+    def cancelar(self):
+        self.ensure_one()
+        self.state = 'cancelado'
