@@ -68,3 +68,4 @@ class HelpdeskTicket(models.Model):
     def cancelar(self):
         self.ensure_one()
         self.state = 'cancelado'
+        
