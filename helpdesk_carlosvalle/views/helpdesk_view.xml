@@ -41,6 +41,7 @@
                             <field name="date_limit" />  
                         </group>
                         <group><!-- Esta será la segunda columna-->
+                            <field name="user_id"/>
                             <field name="assigned" />  
                             <field name="time" />  
                         </group>
@@ -48,6 +49,10 @@
                     <notebook> <!-- Con esto creamos las diferentes pestañas en la hoja-->
                         <page string="Description">
                             <field name="description"/>  <!-- Aqui añadimos el campo sin añadirle ningun grupo -->
+                            <field name="tag_ids"/>
+                        </page>
+                        <page string="Actions">
+                            <field name="action_ids"/>  <!-- Aqui añadimos el campo sin añadirle ningun grupo -->
                         </page>
                         <page string="Quality"><!-- Dentro de la pestaña Quality vemos dos formas de poder visualizar el contenido -->
                             <group name="group"> <!-- Primera forma -->
