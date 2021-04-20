@@ -92,7 +92,6 @@ class HelpdeskTicket(models.Model):
         string='Assigned to'
     )
 
-
     
     def asignar(self):
         self.ensure_one()
