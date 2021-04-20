@@ -42,13 +42,18 @@
                         </group>
                         <group><!-- Esta será la segunda columna-->
                             <field name="user_id"/>
-                            <field name="assigned" />  
+                            <field name="assigned"/>
+                            <field name="ticket_qty"/>  
                             <field name="time" />  
                         </group>
                     </group>
                     <notebook> <!-- Con esto creamos las diferentes pestañas en la hoja-->
                         <page string="Description">
                             <field name="description"/>  <!-- Aqui añadimos el campo sin añadirle ningun grupo -->
+                            <group>
+                                <field name="tag_name"/>
+                                <button string="Create tag" name="create_tag" type="object"/>
+                            </group>
                             <field name="tag_ids"/>
                         </page>
                         <page string="Actions">

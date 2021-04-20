@@ -1,4 +1,4 @@
-from odoo import fields, models 
+from odoo import fields, models, api
 
 class HelpdeskTicketAction(models.Model):
     _name = 'helpdesk.ticket.action'
@@ -121,9 +121,41 @@ class HelpdeskTicket(models.Model):
         self.ensure_one()
         self.state = 'cancelado'
 
-   #@api.depends('user_id')  
+    @api.depends('user_id')  
     def _compute_assigned(self):
         for record in self:
             record.assigned = self.user_id and True or False
     
+    # Hacer un campo calculado que indique, dentro de un ticket
+    # la cantidad de tickets asociados al mismo usuario 
+    ticket_qty = fields.Integer(
+        string='Ticket Qty',
+        compute='_compute_ticket_qty')
 
+    @api.depends('user_id')
+    def _compute_ticket_qty(self):
+        for record in self:
+            other_tickets = self.env['helpdesk.ticket'].search([('user_id', '=', record.user_id.id)])
+            record.ticket_qty = len(other_tickets)
+
+
+    # Crear un campo nombre de etiqueta y hacer un boton que cree la nueva etiqueta con ese nombre y lo asocie al ticket
+    tag_name = fields.Char(
+        string='Tag_Name')
+
+    def create_tag(self):
+        self.ensure_one()
+        # opcion 1 (mas optima)
+        self.write({
+            'tag_ids': [(0,0, {'name':self.tag_name})]
+        })
+
+        # opcion 2 (la mas sencilla)
+        # tag = self.env['helpdesk.ticket.tag'].create({
+        #     'name': self.tag_name
+        # })
+        # self.write({
+        #     'tag_ids': [(4,tag.id,0)]
+        # })
+
+        
