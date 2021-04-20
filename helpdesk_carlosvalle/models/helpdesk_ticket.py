@@ -51,7 +51,7 @@ class HelpdeskTicket(models.Model):
 
         # for ticket in self:                 # self son varios registros, por lo que tenemos que hacerlo uno a uno en un for o con un write
         #     ticket.state = 'asignado'
-        #     ticket.assigne = True           # mi objeto ticket lo estoy asignando
+        #     ticket.assigne = True           # mi objeto ticket lo estoy asignando 
 
 
     def proceso(self):
