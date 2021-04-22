@@ -4,11 +4,17 @@ class HelpdeskTicketAction(models.Model):
     _name = 'helpdesk.ticket.action'
     _description = 'Action'
 
-    name = fields.Char()
-    date = fields.Date()
-    ticket_id = fields.Many2one(
+    name = fields.Char()                    # Campo name
+    date = fields.Date()                    # Campo date 
+
+    # Vamos a definir que una accion seria como la linea de un presupuesto de ventas.
+    # Una accion solo puede estar en un ticket 
+    # Este many2one apuntara a helpdeskticket.
+    ticket_id = fields.Many2one(            
         comodel_name='helpdesk.ticket',
         string='Ticket')
+
+
 
 
 class HelpdeskTicketTag(models.Model):
@@ -16,12 +22,18 @@ class HelpdeskTicketTag(models.Model):
     _description = 'Tag'
 
     name = fields.Char()
+
+
+    # Añadir un m2m en helpdeskticket.tag para ver todas las tareas relacionadas con cada tag
+    # Esto nos sirver para saber qie tickets estan asociados a una etiqueta 
     tickets_ids = fields.Many2many(
-        comodel_name='helpdesk.ticket',
+        comodel_name='helpdesk.ticket',     # Ponemos el modelo del que queremos coger los datos
         relation='helpdesk_ticket_tag_rel', # Como quiero que se llame la tabla intermedia
-        column1='tag_id',                   #
-        column2='ticket_id',                #
-        string='Tags')
+        column1='tag_id',                   # Cual es la columna que apunta a mi tabla 
+        column2='ticket_id',                # Cual es la columna que apunta a la otra tabla
+        string='Tickets')
+
+
 
 
 class HelpdeskTicket(models.Model):
@@ -31,29 +43,15 @@ class HelpdeskTicket(models.Model):
 
 
 
-    tag_ids = fields.Many2many(
-        comodel_name='helpdesk.ticket.tag',
-        relation='helpdesk_ticket_tag_rel', # Como quiero que se llame la tabla intermedia
-        column1='ticket_id',                #
-        column2='tag_id',                   #
-        string='Tags')
-
-
-    # Esto apuntan al ticket 
-    action_ids = fields.One2many(
-        comodel_name='helpdesk.ticket.action',
-        inverse_name='ticket_id',
-        string='Actions')
-
-
-
     # string es para el nombre de la vista en odoo.
     # El nombre de la variable es para bbdd
     name = fields.Char(
         string= 'Name',required=True)
+
     description = fields.Text(
         string= 'Description',
         translate=True)
+
     date = fields.Date(
         string= 'Date'
     )
@@ -87,12 +85,30 @@ class HelpdeskTicket(models.Model):
         help='Descrive preventive actions to do')
 
 
+    # Esto indica que dentro de mi ticket asocio un usuario, un usuario puede estar asociado a muchos tickets
     user_id = fields.Many2one(      # Habra una columna que sea user id y apunte al otro id 
-        comodel_name='res.users',
-        string='Assigned to'
+        comodel_name='res.users',   #
+        string='Assigned to'        # A quien esta asignando el ticjet 
     )
 
-    
+    tag_ids = fields.Many2many(
+        comodel_name='helpdesk.ticket.tag', # Ponemos el modelo aqui 
+        relation='helpdesk_ticket_tag_rel', # Como quiero que se llame la tabla intermedia
+        column1='ticket_id',                # Le indicamos cual es la columna que apunta a mi tabla 
+        column2='tag_id',                   # Cual es la clumna que apunta a la otra tabla 
+        string='Tags')                      # Nombre que le damos 
+
+    # Esto apuntan al ticket 
+    action_ids = fields.One2many(               
+        comodel_name='helpdesk.ticket.action',  # Esto apunta a este modelo 
+        inverse_name='ticket_id',               # Cual es el campo del modelo anterior que apunta al mio 
+        string='Actions')                       # Como se va a llamar 
+
+
+
+
+    # ----------------------- Metodos ------------------------------ 
+
     def asignar(self):
         self.ensure_one()
         self.write({
@@ -120,20 +136,24 @@ class HelpdeskTicket(models.Model):
         self.ensure_one()
         self.state = 'cancelado'
 
+
     @api.depends('user_id')  
     def _compute_assigned(self):
         for record in self:
             record.assigned = self.user_id and True or False
     
+
+
     # Hacer un campo calculado que indique, dentro de un ticket
     # la cantidad de tickets asociados al mismo usuario 
     ticket_qty = fields.Integer(
-        string='Ticket Qty',
-        compute='_compute_ticket_qty')
+        string='Ticket Qty',            # Le paso el string
+        compute='_compute_ticket_qty')  # Con esto le estoy pasando el nombre del metodo
 
+    
     @api.depends('user_id')
     def _compute_ticket_qty(self):
-        for record in self:
+        for record in self:         
             other_tickets = self.env['helpdesk.ticket'].search([('user_id', '=', record.user_id.id)])
             record.ticket_qty = len(other_tickets)
 
@@ -143,11 +163,10 @@ class HelpdeskTicket(models.Model):
         string='Tag_Name')
 
     def create_tag(self):
-        self.ensure_one()
+        self.ensure_one()       # V a ser un boton que va a estar dentro de mi formulario
         # opcion 1 (mas optima)
         self.write({
-            'tag_ids': [(0,0, {'name':self.tag_name})]
-        })
+            'tag_ids': [(0,0, {'name':self.tag_name})]})
 
         # opcion 2 (la mas sencilla)
         # tag = self.env['helpdesk.ticket.tag'].create({
