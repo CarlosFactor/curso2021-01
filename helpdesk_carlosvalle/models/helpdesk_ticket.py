@@ -175,5 +175,6 @@ class HelpdeskTicket(models.Model):
         # self.write({
         #     'tag_ids': [(4,tag.id,0)]
         # })
+        self.tag_name = False
 
         
