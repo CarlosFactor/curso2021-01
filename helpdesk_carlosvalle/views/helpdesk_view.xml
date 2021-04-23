@@ -73,30 +73,117 @@
         </field> 
     </record>
 
-    <!-- <record id="view_helpdesk_ticket_search" model="ir.ui.view">
+
+    <record id="view_helpdesk_ticket_search" model="ir.ui.view">
         <field name="name">view.helpdesk_ticket.search </field>
         <field name="model">helpdesk.ticket</field>
         <field name="arch" type= "xml">
             <search string="Ticket">
-                <field name="name" />
-                <group string="Group By" name="groupby">
-                    <filter name="name_groupby" string="name" context="{'group_by: 'name'}" />
-                </group>  
+                <!-- Filtramos por nombre -->
+                <field name="name" />   
+
+                <!-- Filtramos por usuario asignado-->    
+                <field name="user_id" />  
+
+                <!-- Filtrar por tickets asignados-->
+                <filter string='Assigned' name="assigned_to" domain="[('user_id', '!=', False)]"/>     
+                
+                <!-- Filtrar tickets sin date_limit-->
+                <filter string='No Date Limit' name="date_limit" domain="[('date_limit', '!=', False)]"/>
+
+                <!-- Agrupar por date_limit -->
+                <filter string="Date Limit" name="date_limit" context="{'group_by':'date_limit'}"/>
+
+                <!-- Agrupar por usuario asignado-->
+                <filter string="Assigned to" name="user_id" context="{'group_by':'user_id'}"/>
+ 
             </search>
         </field> 
     </record>
 
-    <record id="helpdesk_ticket_action" model="ir.actions.act_window">
-        <field name="name">Ticket </field>
-        <field name="res_model">helpdesk.ticket</field>
-        <field name="view_mode">tree,form</field>
-        <field name= "help" type= "html">
-            <p class="oe_view_nocontent_create">
-                Click to create a new ticket
-            </p>
+
+    <!-- Tiempo dedicado por usuario/mes -->
+    <record id="view_helpdesk_ticket_pivot" model="ir.ui.view">
+        <field name="name">view.helpdesk_ticket.pivot </field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type= "xml">
+            <pivot string="Ticket">
+                <field name="user_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="time" type="measure" widget="float_time"/>
+            </pivot>
         </field> 
     </record>
 
-    <menuitem id="helpdesk_ticket_menu" parent="" action="helpdesk_ticket_action" sequence="20"/> -->
+
+    <!-- Tiempo dedicado por usuario -->
+    <record id="view_helpdesk_ticket_graph" model="ir.ui.view">
+        <field name="name">view.helpdesk_ticket.graph </field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type= "xml">
+            <graph string="Ticket" >
+                <field name="user_id"/>
+                <field name="time" type="measure" widget="float_time"/>
+            </graph>
+        </field> 
+    </record>
+
+
+    <!-- Mostrar por fecha cada usuario asignado-->
+    <record id="view_helpdesk_ticket_calendar" model="ir.ui.view">
+        <field name="name">view.helpdesk_ticket.calendar </field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type= "xml">
+            <!-- Event limit es cuantos elementos voy a mostrar como maximo  -->
+            <calendar string="Ticket" date_start ="date" color="user_id" hide_time="true" event_limit ="5">
+                <!-- avatar_field es que si el user_id tiene los campos de imagenes el user_id es como el partner
+                     image_128 es la que se usa para las imagenes en Odoo -->
+                <field name="user_id" avatar_field="image_128"/>
+                <field name="name" />
+                <field name="user_id" filters="1" invisible="1"/>
+            </calendar>
+        </field> 
+    </record>
+
+
+    <!-- Mostrar en la tarjeta usuario y tiempo dedicado
+    Agrupar por usuario 
+    Extra: añadir un field color para cambiar el color de la tarjeta
+    Para esto ultimo podemos ver como esta hecho en crm.lead -->
+    <record id="view_helpdesk_ticket_kanban" model="ir.ui.view">
+        <field name="name">view.helpdesk_ticket.kanban </field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type= "xml">
+            <kanban default_group_by="user_id">
+            <field name="color"/>
+                <templates>                                     <!-- El templates es codigo QWeb -->
+                    <t t-name="kanban-box">                     <!-- El elemento t sera el Kanban-box, que es la tarjeta -->
+                        <div t-attf-class="#{!selection_mode ? kanban_color(record.color.raw_value) : ''} oe_kanban_content oe_kanban_global_click" >  <!-- El div sera el contenido -->
+                            <div class="o_dropdown_kanban dropdown">
+                                <a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" data-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                    <span class="fa fa-ellipsis-v"/>
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <ul class="oe_kanban_colorpicker" data-field="color"/>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_title">
+                                <strong><field name="name"/></strong>
+                            </div>
+                            <div class="o_kanban_record_subtitle">
+                                <field name="date"/>
+                                <field name="time"/>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field> 
+    </record>
 </odoo>
 

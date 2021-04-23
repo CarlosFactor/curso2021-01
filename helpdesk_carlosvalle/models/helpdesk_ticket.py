@@ -105,7 +105,8 @@ class HelpdeskTicket(models.Model):
         string='Actions')                       # Como se va a llamar 
 
 
-
+    # Declaramos color de tipo entero diciendole que es un campo calculado del metodo color_estado
+    color= fields.Integer('Color Index',default=10, compute='color_estado')
 
     # ----------------------- Metodos ------------------------------ 
 
@@ -140,7 +141,7 @@ class HelpdeskTicket(models.Model):
     @api.depends('user_id')  
     def _compute_assigned(self):
         for record in self:
-            record.assigned = self.user_id and True or False
+            record.assigned = self.user_id and True or False # Si user_id tiene algo sera verdadero y si no tiene nada sera falso
     
 
 
@@ -178,3 +179,16 @@ class HelpdeskTicket(models.Model):
         self.tag_name = False
 
         
+    # Con este metodo cambiamos el color de las tarjetas en la vista kanban en base al estado del cliente 
+    @api.depends('state')
+    def color_estado(self):
+        for record in self:
+            diccionario_colores_dict={
+                'nuevo': 1,
+                'asignado': 2,
+                'en_proceso': 3,
+                'pendiente': 4,
+                'resuelto': 5,
+                'cancelado': 6
+            }
+            record.color = diccionario_colores_dict[record.state]
