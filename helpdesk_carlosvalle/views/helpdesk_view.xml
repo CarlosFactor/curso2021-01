@@ -41,10 +41,10 @@
                             <field name="date_limit" />  
                         </group>
                         <group><!-- Esta será la segunda columna-->
-                            <field name="user_id"/>
+                            <field name="user_id" options="{'no_create': True, 'no_open': True}"/>
                             <field name="assigned"/>
                             <field name="ticket_qty"/>  
-                            <field name="time" />  
+                            <field name="time" widget="float_time"/>  
                         </group>
                     </group>
                     <notebook> <!-- Con esto creamos las diferentes pestañas en la hoja-->
@@ -54,10 +54,21 @@
                                 <field name="tag_name"/>
                                 <button string="Create tag" name="create_tag" type="object"/>
                             </group>
-                            <field name="tag_ids"/>
+                            <field name="tag_ids" context="{'form_view_ref':'helpdesk_carlosvalle.view_helpdesk_ticket_tag_simple_form'}"/>
                         </page>
                         <page string="Actions">
-                            <field name="action_ids"/>  <!-- Aqui añadimos el campo sin añadirle ningun grupo -->
+                            <field name="action_ids" context="{'default_date': date}">  <!-- Aqui añadimos el campo sin añadirle ningun grupo -->
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="date"/>
+                                </tree>
+                                <form>
+                                    <group name="action">
+                                        <field name="name"/>
+                                        <field name="date"/>
+                                    </group>
+                                </form>
+                            </field>
                         </page>
                         <page string="Quality"><!-- Dentro de la pestaña Quality vemos dos formas de poder visualizar el contenido -->
                             <group name="group"> <!-- Primera forma -->
