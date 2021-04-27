@@ -53,6 +53,13 @@ class HelpdeskTicket(models.Model):
         return fields.Date.today()
 
 
+    # Metodo para que nos devuelva la fecha de mañana en el Date
+    # @api.Model
+    # def default_get(self, default_fields):
+    #     vals = super(HelpdeskTicket,self).default_get(default_fields)
+    #     vals.update({'date': fields.Date.today() + timedelta(days=1)})
+    #     return vals
+
 
     # string es para el nombre de la vista en odoo.
     # El nombre de la variable es para bbdd
@@ -184,8 +191,8 @@ class HelpdeskTicket(models.Model):
     def create_tag(self):
         self.ensure_one()       # V a ser un boton que va a estar dentro de mi formulario
         # opcion 1 (mas optima)
-        self.write({
-            'tag_ids': [(0,0, {'name':self.tag_name})]})
+        # self.write({
+        #     'tag_ids': [(0,0, {'name':self.tag_name})]})
 
         # opcion 2 (la mas sencilla)
         # tag = self.env['helpdesk.ticket.tag'].create({
@@ -194,9 +201,24 @@ class HelpdeskTicket(models.Model):
         # self.write({
         #     'tag_ids': [(4,tag.id,0)]
         # })
-        self.tag_name = False
+        #self.tag_name = False
 
+
+        # Modificar el botón de crear una etiqueta en el formulario de ticket para que abra una acción nueva,
+        # pasando por contexto el valor del nombre y la relación con el ticket.
+
+        action = self.env.ref('helpdesk_carlosvalle.action_new_tag').read()[0]
+
+        action['context'] = {
+            'default_name': self.tag_name,              # Con esto coge el nombre del campo que le pasamos nosotros y lo introduce en el form por defecto
+            'default_tickets_ids': [(6,0,self.ids)]     # Coge los campos del ticket fecha y nombre del ticket y los introduce en el form 
+        }
+        # action['res_id'] = tag.id
+        self.tag_name = False
+        return action
         
+
+
     # Con este metodo cambiamos el color de las tarjetas en la vista kanban en base al estado del cliente 
     @api.depends('state')
     def color_estado(self):
@@ -227,3 +249,8 @@ class HelpdeskTicket(models.Model):
         self.date_limit = date_limit
 
     
+
+
+    
+
+
