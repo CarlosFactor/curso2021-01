@@ -1,4 +1,6 @@
-from odoo import fields, models, api
+from odoo import fields, models, api, _ 
+from odoo.exceptions import ValidationError
+from datetime import timedelta
 
 class HelpdeskTicketAction(models.Model):
     _name = 'helpdesk.ticket.action'
@@ -43,6 +45,15 @@ class HelpdeskTicket(models.Model):
 
 
 
+
+    # ----------------------- Funciones del default ---------------------------------------
+
+    # Metodo para que nos devuelva la fecha de hoy en el Date
+    def _date_default_today(self):
+        return fields.Date.today()
+
+
+
     # string es para el nombre de la vista en odoo.
     # El nombre de la variable es para bbdd
     name = fields.Char(
@@ -53,8 +64,8 @@ class HelpdeskTicket(models.Model):
         translate=True)
 
     date = fields.Date(
-        string= 'Date'
-    )
+        string= 'Date',
+        default= _date_default_today)
 
     state = fields.Selection(
         [('nuevo','Nuevo'),
@@ -108,8 +119,15 @@ class HelpdeskTicket(models.Model):
     # Declaramos color de tipo entero diciendole que es un campo calculado del metodo color_estado
     color= fields.Integer('Color Index',default=10, compute='color_estado')
 
+
+
+
+
     # ----------------------- Metodos ------------------------------ 
 
+
+
+    
     def asignar(self):
         self.ensure_one()
         self.write({
@@ -192,3 +210,20 @@ class HelpdeskTicket(models.Model):
                 'cancelado': 6
             }
             record.color = diccionario_colores_dict[record.state]
+    
+
+
+    @api.constrains( 'time')
+    def _time_positive (self):
+        for ticket in self:
+            if ticket.time and ticket.time < 0:
+                raise ValidationError (_("The time can not be negative" ))
+
+
+
+    @api.onchange( 'date','time')
+    def _onchange_date (self):
+        date_limit = self.date and self.date + timedelta(hours=self.time)
+        self.date_limit = date_limit
+
+    
