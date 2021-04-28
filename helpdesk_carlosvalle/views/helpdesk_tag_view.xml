@@ -10,6 +10,9 @@
                     <h1>
                         <field name="name" />
                     </h1>
+                    <group name="public">
+                        <field name="public"/>
+                    </group>
                     <field name="tickets_ids" />
                 </sheet>
             </form>

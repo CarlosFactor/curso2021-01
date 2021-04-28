@@ -25,6 +25,7 @@ class HelpdeskTicketTag(models.Model):
 
     name = fields.Char()
 
+    public = fields.Boolean()
 
     # Añadir un m2m en helpdeskticket.tag para ver todas las tareas relacionadas con cada tag
     # Esto nos sirver para saber qie tickets estan asociados a una etiqueta 
@@ -35,6 +36,10 @@ class HelpdeskTicketTag(models.Model):
         column2='ticket_id',                # Cual es la columna que apunta a la otra tabla
         string='Tickets')
 
+    # @api.model
+    # def cron_delete_tag(self):
+    #     tickets = self.search([('tickets_ids','=',False)])
+    #     tickets.unlink()
 
 
 

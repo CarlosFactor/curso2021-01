@@ -54,7 +54,8 @@
                                 <field name="tag_name"/>
                                 <button string="Create tag" name="create_tag" type="object"/>
                             </group>
-                            <field name="tag_ids" context="{'form_view_ref':'helpdesk_carlosvalle.view_helpdesk_ticket_tag_simple_form'}"/>
+                            <field name="tag_ids" context="{'form_view_ref':'helpdesk_carlosvalle.view_helpdesk_ticket_tag_simple_form'}"
+                            domain="[('public', '=', True)]" options="{'no_create': True}"/>
                         </page>
                         <page string="Actions">
                             <field name="action_ids" context="{'default_date': date}">  <!-- Aqui añadimos el campo sin añadirle ningun grupo -->
