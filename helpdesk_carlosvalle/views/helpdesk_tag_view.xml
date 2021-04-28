@@ -12,6 +12,9 @@
                     </h1>
                     <group name="public">
                         <field name="public"/>
+                        <button string="Create Ticket" 
+                        name="%(helpdesk_carlosvalle.create_ticket_action)d"
+                        type="action"/>
                     </group>
                     <field name="tickets_ids" />
                 </sheet>
