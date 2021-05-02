@@ -149,17 +149,22 @@ class HelpdeskTicket(models.Model):
             record.time = sum(record.action_ids.mapped('time')) 
 
 
-    def _set_time(self):
+    #Este es el metodo del inverse 
+    def _set_time(self):        
         for record in self:
             if record.time:
                 time_now = sum(record.action_ids.mapped('time')) 
                 next_time = record.time - time_now
                 if next_time:
-                    data = {'name': '/', 'time': next_time, 'date': fields.Date.today(), 'ticket_id': record.id}
+                    data = {
+                        'name': '/', 'time': next_time, 
+                        'date': fields.Date.today(), 
+                        'ticket_id': record.id
+                        }
                     self.env['helpdesk.ticket.action'].create(data)
 
 
-
+    # Funcion que buscara tickes o acciones donde el tiempo sea mayor que el indicado 
     def _search_time(self, operator, value):
         actions = self.env['helpdesk.ticket.action'].search([('time',operator,value)])
         return [('id', 'in', actions.mapped('ticket_id').ids)]
@@ -272,7 +277,8 @@ class HelpdeskTicket(models.Model):
                 raise ValidationError (_("The time can not be negative" ))
 
 
-
+    # Funcion para que al indicar la fecha y las horas, en base a las horas, 
+    # nos ponga un da mas en la fecha limite
     @api.onchange( 'date','time')
     def _onchange_date (self):
         date_limit = self.date and self.date + timedelta(hours=self.time)
