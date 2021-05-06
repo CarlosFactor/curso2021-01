@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<odoo noupdate="1">
+    <!-- Crearemos un proyecto que se va a llamar Helpdesk-->
+    <record id="project_helpdkesk" model="project.project">
+        <field name="name">Helpdesk</field>
+    </record>
+</odoo>

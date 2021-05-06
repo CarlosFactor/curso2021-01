@@ -197,12 +197,17 @@ class HelpdeskTicket(models.Model):
         self.ensure_one()
         self.state = 'cancelado'
 
+    def cancelar_multi(self):
+        for record in self:
+            record.cancelar()
+
 
     @api.depends('user_id')  
     def _compute_assigned(self):
         for record in self:
-            record.assigned = self.user_id and True or False # Si user_id tiene algo sera verdadero y si no tiene nada sera falso
-    
+            # Si user_id tiene algo sera verdadero y si no tiene nada sera falso
+            record.assigned = self.user_id and True or False
+
 
 
     # Hacer un campo calculado que indique, dentro de un ticket

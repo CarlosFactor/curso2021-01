@@ -4,9 +4,7 @@ from odoo import models, api, fields, _
 class CreateTicket(models.TransientModel):
     _name = 'create.ticket'
 
-    name = fields.Char(){
-        required=True
-    }
+    name = fields.Char()
 
     def create_ticket(self):
         self.ensure_one()
