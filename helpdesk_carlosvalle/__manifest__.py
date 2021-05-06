@@ -11,7 +11,10 @@
     'category': 'Uncategorized',
     'version': '14.0.1.0.0',
 
-    'depends': ['base'],
+    'depends': [
+        'base',
+        'mail'],
+
     'license': 'AGPL-3',
     
     'data':[

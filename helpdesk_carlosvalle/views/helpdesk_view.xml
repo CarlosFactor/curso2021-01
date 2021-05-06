@@ -37,8 +37,10 @@
                     <group> <!-- Con esto indicamos que quiero dos columnas en mi hoja. Las columnas se indican con group -->
                             <!-- Cada grupo es una columna de titulo y campo -->
                         <group><!-- Esta será la primera columna-->
+                            <!-- Con el context indicamos que cuando yo lo cree se cree como tipo individual y el comercial sea el usuario asignado al ticket-->
+                            <field name="partner_id" context="{'default_company_type':'person','default_user_id':user_id}"/>
                             <field name="date" />  
-                            <field name="date_limit" />  
+                            <field name="date_limit"/> 
                         </group>
                         <group><!-- Esta será la segunda columna-->
                             <field name="user_id" options="{'no_create': True, 'no_open': True}"/>
@@ -82,6 +84,11 @@
                         </page>
                     </notebook>
                 </sheet>    
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" options="{'post_refresh': 'recipients'}"/>
+                </div>
             </form>
         </field> 
     </record>
@@ -109,7 +116,7 @@
 
                 <!-- Agrupar por usuario asignado-->
                 <filter string="Assigned to" name="user_id" context="{'group_by':'user_id'}"/>
- 
+
             </search>
         </field> 
     </record>
@@ -150,7 +157,7 @@
             <!-- Event limit es cuantos elementos voy a mostrar como maximo  -->
             <calendar string="Ticket" date_start ="date" color="user_id" hide_time="true" event_limit ="5">
                 <!-- avatar_field es que si el user_id tiene los campos de imagenes el user_id es como el partner
-                     image_128 es la que se usa para las imagenes en Odoo -->
+                    image_128 es la que se usa para las imagenes en Odoo -->
                 <field name="user_id" avatar_field="image_128"/>
                 <field name="name" />
                 <field name="user_id" filters="1" invisible="1"/>
@@ -168,6 +175,8 @@
         <field name="model">helpdesk.ticket</field>
         <field name="arch" type= "xml">
             <kanban default_group_by="user_id">
+            <field name="activity_ids"/>
+            <field name="activity_state"/>
             <field name="color"/>
                 <templates>                                     <!-- El templates es codigo QWeb -->
                     <t t-name="kanban-box">                     <!-- El elemento t sera el Kanban-box, que es la tarjeta -->
@@ -186,6 +195,11 @@
                             <div class="o_kanban_record_subtitle">
                                 <field name="date"/>
                                 <field name="time"/>
+                            </div>
+                            <div class="oe_kanban_bottom_left">
+                                <div class="o_kanban_inline_block">
+                                    <field name="activity_ids" widget="kanban_activity"/>
+                                </div>
                             </div>
                             <div class="o_kanban_record_bottom">
                                 <div class="oe_kanban_bottom_right">

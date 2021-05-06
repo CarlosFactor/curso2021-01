@@ -50,6 +50,11 @@ class HelpdeskTicket(models.Model):
     _name = 'helpdesk.ticket'
     _description = 'Ticket'
 
+    _inherit = ['mail.thread.cc',
+                'mail.thread.blacklist', 
+                'mail.activity.mixin']
+
+    _primary_email = 'email_from'
 
 
 
@@ -136,9 +141,13 @@ class HelpdeskTicket(models.Model):
     # Declaramos color de tipo entero diciendole que es un campo calculado del metodo color_estado
     color= fields.Integer('Color Index',default=10, compute='color_estado')
 
+    # Creamos el campo partner que estara relaciona con res.partner
+    partner_id = fields.Many2one(
+        comodel_name='res.partner',
+        string='Partner')
 
-
-
+    email_from = fields.Char(
+        string='Email from')
 
     # ----------------------- Metodos ------------------------------ 
 
