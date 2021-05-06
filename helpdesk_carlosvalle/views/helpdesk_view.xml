@@ -212,5 +212,43 @@
             </kanban>
         </field> 
     </record>
+
+    <record id="helpdesk_ticket_action" model="ir.actions.act_window">
+        <field name="name">Tickets</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">helpdesk.ticket</field>
+        <field name="view_mode">tree,kanban,calendar,pivot,graph,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new ticket
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="helpdesk_ticket_menu_action" name="Tickets" sequence="10" parent="helpdesk_menu_submenu" action="helpdesk_ticket_action"/>
+
+    <record id="action_report_helpdesk_ticket" model="ir.actions.report">
+        <field name="name">Ticket Report</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">helpdesk_carlosvalle.report_helpdesk_ticket</field>
+        <field name="report_file">helpdesk_carlosvalle.report_helpdesk_ticket</field>
+        <field name="print_report_name">'Ticket - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_helpdesk_ticket"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_partner_helpdesk" model="ir.actions.report">
+        <field name="name">Helpdesk Partner ID</field>
+        <field name="model">res.partner</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">helpdesk_carlosvalle.report_partner_helpdesk</field>
+        <field name="report_file">helpdesk_carlosvalle.report_partner_helpdesk</field>
+        <field name="print_report_name">'ID/%s' % (object.name)</field>
+        <field name="paperformat_id" ref="helpdesk_carlosvalle.paperformat_helpdesk"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_type">report</field>
+    </record>
 </odoo>
 

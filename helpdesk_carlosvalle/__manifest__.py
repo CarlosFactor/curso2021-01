@@ -20,6 +20,8 @@
     'data':[
         'security/helpdesk_security.xml',
         'security/ir.model.access.csv',
+        "reports/helpdesk_ticket_report_templates.xml",
+        "reports/res_partner_templates.xml",
         'views/helpdesk_menu.xml',
         'views/helpdesk_view.xml',
         'wizards/create_ticket_view.xml',
